@@ -1,0 +1,38 @@
+.theme-wrapper {
+  width: 700px;
+  background-color: #f3f7ff;
+  padding: 20px 18px;
+  border-radius: 10px;
+  font-family: 'Noto Sans KR', sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+.theme-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #145bc7;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.theme-icon {
+  margin-right: 8px;
+  font-size: 23px;
+  color: #145bc7;
+}
+.theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.theme-box {
+  flex: 1 1 150px;
+  background-color: #eaf0fc;
+  padding: 14px 16px;
+  border-radius: 8px;
+}
+.theme-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2d72d9;
+}

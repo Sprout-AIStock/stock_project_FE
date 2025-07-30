@@ -1,0 +1,45 @@
+.topstock-icon {
+  color: #145bc7;
+  font-size: 21px;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+.topstock-panel {
+    width: 260px;
+    background-color: #f3f7ff;
+    padding: 20px 18px;
+    border-radius: 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.topstock-title {
+  font-weight: 700;
+  color: #145bc7;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.topstock-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.topstock-list li {
+  font-family: 'Noto Sans KR', 'Pretendard', 'Apple SD Gothic Neo', Arial, sans-serif;
+  font-size: 15px;
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+}
+.topstock-rank {
+  font-family: 'Montserrat', 'Pretendard', Arial, sans-serif;
+  font-weight: 700;
+  color: #0073ff;
+  margin-right: 6px;
+}
+.bullish {
+  color: #e74c3c;
+  font-weight: 700;
+}
+.bearish {
+  color: #2980b9;
+  font-weight: 700;
+}

@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import BannerWithSearch from './components/BannerWithSearch';
+import MacroNewsPanel from './components/MacroNewsPanel';
+import ThemeSection from './components/ThemeSection';
+import TopStockPanel from './components/TopStockPanel';
+import PopularNewsPanel from './components/PopularNewsPanel';
+import StockDetail from './pages/StockDetail';
+import './App.css';
 
+function MainPage() {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {/* 배너 검색 영역 */}
+      <div className="banner-area">
+        <BannerWithSearch />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="layout-container">
+        {/* 좌측: 거시경제 뉴스 */}
+        <aside className="panel-box">
+          <MacroNewsPanel />
+        </aside>
+        {/* 중앙: 테마별 보기 */}
+        <main>
+          <ThemeSection />
+        </main>
+        {/* 우측: 종목 인기/기사 */}
+        <div className="right-panel">
+          <div className="panel-box">
+            <TopStockPanel />
+          </div>
+          <div className="panel-box">
+            <PopularNewsPanel />
+          </div>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/stock/:code" element={<StockDetail />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
