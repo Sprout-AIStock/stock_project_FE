@@ -1,123 +1,190 @@
-.stock-detail-bg {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-  padding: 0;
+/* 전역 설정 */
+* {
+  user-select: none;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
+input, textarea, [contenteditable="true"] {
+  user-select: text !important;
+  cursor: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+button, a, [role="button"], .clickable {
+  cursor: pointer !important;
+}
+
+body {
+  background-color: #ffffff;
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 단일 컬럼 레이아웃 컨테이너 */
 .stock-detail-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  padding: 40px 20px;
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  gap: 24px;
-  padding: 40px 20px 24px;
+  box-sizing: border-box;
 }
 
-.stock-detail-center-panel {
+.single-column-layout {
   width: 100%;
   max-width: 800px;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  padding: 40px 48px 48px 48px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  gap: 32px;
 }
 
-.stock-detail-header {
-  margin-bottom: 40px;
+/* 뒤로가기 네비게이션 */
+.back-navigation {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.back-icon {
+  font-size: 14px;
+  color: #2d72d9;
+}
+
+/* 종목 정보 섹션 */
+.stock-info-section {
   text-align: center;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 24px;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-bottom: 3px solid #2d72d9;
 }
 
-.stock-detail-title {
+.stock-name {
   font-size: 2.5rem;
   font-weight: 800;
-  margin-bottom: 8px;
   color: #2d72d9;
-  //text-shadow: 0 1px 3px rgba(45, 114, 217, 0.3);
+  margin: 0 0 12px 0;
+  line-height: 1.2;
 }
 
-.stock-detail-code {
+.stock-code {
   font-size: 1.1rem;
   color: #666;
   margin: 0;
   font-weight: 500;
 }
 
-.section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: #333;
+/* 각 섹션 공통 스타일 */
+.chart-section, .insight-section, .news-section, .error-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* 패널 헤더 */
+.panel-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
 }
 
-.section-icon {
-  font-size: 1.6rem;
+.panel-icon {
+  font-size: 24px;
   color: #2d72d9;
-  flex-shrink: 0;
+  margin-right: 12px;
 }
 
-.stock-detail-section {
-  margin-bottom: 40px;
-  padding: 24px;
-  background: #fafbfc;
+.panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+/* 패널 콘텐츠 */
+.panel-content {
+  background: #f8f9fa;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
-}
-
-.stock-chart, .stock-insight, .stock-issues {
-  background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  line-height: 1.6;
+  border-left: 4px solid #2d72d9;
 }
 
+/* 오류 메시지 */
 .error-message {
   text-align: center;
-  color: #e74c3c;
-  font-size: 1.2rem;
+  color: #ef4444;
+  font-size: 1.1rem;
   font-weight: 600;
-  padding: 40px;
+  padding: 20px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
 }
 
-/* 로딩 애니메이션 */
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-.stock-chart:has-text("로딩"), 
-.stock-insight:has-text("로딩"), 
-.stock-issues:has-text("로딩") {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* 반응형 */
+/* 반응형 레이아웃 */
 @media (max-width: 768px) {
   .stock-detail-container {
     padding: 20px 16px;
   }
   
-  .stock-detail-center-panel {
-    padding: 24px 20px;
+  .single-column-layout {
+    gap: 24px;
   }
   
-  .stock-detail-title {
+  .stock-info-section {
+    padding: 24px;
+  }
+  
+  .stock-name {
     font-size: 2rem;
   }
   
-  .section-title {
-    font-size: 1.2rem;
+  .stock-code {
+    font-size: 1rem;
+  }
+  
+  .chart-section, .insight-section, .news-section {
+    padding: 20px;
+  }
+  
+  .panel-title {
+    font-size: 18px;
+  }
+  
+  .panel-icon {
+    font-size: 22px;
+  }
+  
+  .back-button {
+    padding: 10px 16px;
+    font-size: 13px;
   }
 }

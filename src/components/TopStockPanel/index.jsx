@@ -19,7 +19,7 @@ const TopStockPanel = () => {
                     <div key={idx} className="topstock-item">
                         <div className="stock-info">
                             <span className="topstock-rank">{idx + 1}</span>
-                            <span className="stock-name">{stock.name}</span>
+                            <span className="topstock-name">{stock.name}</span>
                         </div>
                         <span className={`stock-change ${stock.change.startsWith('+') ? 'bullish' : 'bearish'}`}>
                             {stock.change}

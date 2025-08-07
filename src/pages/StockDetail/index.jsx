@@ -1,7 +1,8 @@
 
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { TbChartLine, TbBrain, TbNews } from 'react-icons/tb';
+import { FaArrowLeft, FaChartLine, FaBrain, FaNewspaper } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import StockChart from '../../components/StockChart';
 import StockInsight from '../../components/StockInsight';
 import StockIssues from '../../components/StockIssues';
@@ -9,6 +10,7 @@ import './style.css';
 
 export default function StockDetail() {
     const { code } = useParams();
+    const navigate = useNavigate();
     const [stockName, setStockName] = useState("");
 
     useEffect(() => {
@@ -46,9 +48,13 @@ export default function StockDetail() {
 
     if (!code) {
         return (
-            <div className="stock-detail-bg">
-                <div className="stock-detail-container">
-                    <div className="stock-detail-center-panel">
+            <div className="stock-detail-container">
+                <div className="single-column-layout">
+                    <div className="error-section">
+                        <div className="panel-header">
+                            <FaNewspaper className="panel-icon" />
+                            <h2 className="panel-title">오류</h2>
+                        </div>
                         <div className="error-message">종목 코드가 없습니다.</div>
                     </div>
                 </div>
@@ -57,35 +63,51 @@ export default function StockDetail() {
     }
 
     return (
-        <div className="stock-detail-bg">
-            <div className="stock-detail-container">
-                <div className="stock-detail-center-panel">
-                    <div className="stock-detail-header">
-                        <h1 className="stock-detail-title">{stockName}</h1>
-                        <p className="stock-detail-code">종목코드: {code}</p>
-                    </div>
+        <div className="stock-detail-container">
+            <div className="single-column-layout">
+                {/* 뒤로가기 버튼 */}
+                <div className="back-navigation">
+                    <button className="back-button" onClick={() => navigate('/')}>
+                        <FaArrowLeft className="back-icon" />
+                        메인으로 돌아가기
+                    </button>
+                </div>
 
-                    <div className="stock-detail-section">
-                        <h2 className="section-title">
-                            <TbChartLine className="section-icon" />
-                            주가 차트
-                        </h2>
+                {/* 종목 정보 */}
+                <div className="stock-info-section">
+                    <h1 className="stock-name">{stockName}</h1>
+                    <p className="stock-code">종목코드: {code}</p>
+                </div>
+
+                {/* 주가 차트 */}
+                <div className="chart-section">
+                    <div className="panel-header">
+                        <FaChartLine className="panel-icon" />
+                        <h2 className="panel-title">주가 차트</h2>
+                    </div>
+                    <div className="panel-content">
                         <StockChart code={code} />
                     </div>
+                </div>
 
-                    <div className="stock-detail-section">
-                        <h2 className="section-title">
-                            <TbBrain className="section-icon" />
-                            AI 인사이트
-                        </h2>
+                {/* AI 인사이트 */}
+                <div className="insight-section">
+                    <div className="panel-header">
+                        <FaBrain className="panel-icon" />
+                        <h2 className="panel-title">AI 인사이트</h2>
+                    </div>
+                    <div className="panel-content">
                         <StockInsight code={code} />
                     </div>
+                </div>
 
-                    <div className="stock-detail-section" style={{ marginBottom: 0 }}>
-                        <h2 className="section-title">
-                            <TbNews className="section-icon" />
-                            관련 뉴스
-                        </h2>
+                {/* 관련 뉴스 */}
+                <div className="news-section">
+                    <div className="panel-header">
+                        <FaNewspaper className="panel-icon" />
+                        <h2 className="panel-title">관련 뉴스</h2>
+                    </div>
+                    <div className="panel-content">
                         <StockIssues code={code} />
                     </div>
                 </div>
