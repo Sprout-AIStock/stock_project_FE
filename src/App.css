@@ -1,3 +1,26 @@
+/* 전역 텍스트 선택 및 커서 방지 */
+* {
+  user-select: none;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 입력 필드들만 텍스트 선택 허용 */
+input, textarea, [contenteditable="true"] {
+  user-select: text !important;
+  cursor: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* 클릭 가능한 요소들에 포인터 커서 */
+button, a, [role="button"], .clickable {
+  cursor: pointer !important;
+}
+
 body {
   background-color: #ffffff;
   margin: 0;
@@ -13,29 +36,37 @@ body {
 
 /* 전체 3열 레이아웃 */
 .layout-container {
-  display: flex;
-  justify-content: flex-start; /* 중앙에서 왼쪽 정렬로 변경 */
-  gap: 24px;
-  padding: 0;
+  display: grid;
+  grid-template-columns: 320px 1.4fr 280px; /* 좌측 패널 크기 증가 */
+  gap: 32px; /* 더 넉넉한 간격 */
+  padding: 0 20px; /* 좌우 여백 */
   width: 100%;
-  max-width: 1400px; /* 최대 폭 설정 */
+  max-width: 1600px; /* 전체 크기 증가 */
   margin: 0 auto; /* 중앙 정렬 */
+  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
 }
 
 /* 각 패널의 폭 고정 */
 .left-panel {
-  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* panel-box 간격은 내부에서 처리 */
+  margin-top: -250px; /* 위로 이동 */
 }
 
 .center-panel {
-  width: 700px;
+  padding: 32px; /* 넉넉한 패딩 */
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
 }
 
 .right-panel {
-  width: 260px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0; /* panel간격은 margin-bottom으로 처리 */
+  margin-top: -250px; /* 위로 이동 */
 }
 
 /* 공통 패널 박스 */
@@ -43,4 +74,52 @@ body {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 8px;
+}
+
+/* 반응형 레이아웃 */
+@media (max-width: 1200px) {
+  .layout-container {
+    grid-template-columns: 280px 1.3fr 240px; /* 좌측 패널 유지 */
+    gap: 24px;
+    padding: 0 16px;
+  }
+  
+  .center-panel {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .layout-container {
+    grid-template-columns: 240px 1fr 220px; /* 좌측 패널 약간 줄임 */
+    gap: 20px;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  
+  .center-panel {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 8px;
+  }
+  
+  .left-panel, .right-panel, .center-panel {
+    margin-top: 0;
+  }
+  
+  .center-panel {
+    padding: 16px;
+    order: -1; /* 모바일에서 중앙이 맨 위로 */
+  }
+  
+  .banner-area {
+    padding: 20px 0 16px;
+  }
 }

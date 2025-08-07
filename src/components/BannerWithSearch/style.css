@@ -1,3 +1,21 @@
+/* 전역 텍스트 선택 및 커서 설정 */
+* {
+  user-select: none;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 검색창만 텍스트 입력 가능하도록 예외 처리 */
+.search-input {
+  user-select: text !important;
+  cursor: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
 .banner-container {
   display: flex;
   flex-direction: column;
@@ -7,6 +25,11 @@
 .banner-logo {
   width: 350px;
   margin-bottom: 16px;
+  user-select: none;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .search-wrapper {
@@ -51,7 +74,7 @@
   border-radius: 8px;
   padding: 12px 16px;
   margin-left: 12px;
-  cursor: pointer;
+  cursor: pointer !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,7 +134,7 @@
 
 .suggestion-item {
   padding: 12px 16px;
-  cursor: pointer;
+  cursor: pointer !important;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -1,8 +1,10 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BannerWithSearch from './components/BannerWithSearch';
+import EconomicIndicators from './components/EconomicIndicators';
 import MacroNewsPanel from './components/MacroNewsPanel';
 import ThemeSection from './components/ThemeSection';
+import SchedulePanel from './components/SchedulePanel';
 import TopStockPanel from './components/TopStockPanel';
 import PopularNewsPanel from './components/PopularNewsPanel';
 import StockDetail from './pages/StockDetail';
@@ -16,21 +18,26 @@ function MainPage() {
         <BannerWithSearch />
       </div>
       <div className="layout-container">
-        {/* 좌측: 거시경제 뉴스 */}
-        <aside className="panel-box">
-          <MacroNewsPanel />
-        </aside>
-        {/* 중앙: 테마별 보기 */}
-        <main>
-          <ThemeSection />
-        </main>
-        {/* 우측: 종목 인기/기사 */}
-        <div className="right-panel">
+        {/* 좌측: 경제 지표 + 거시경제 뉴스 */}
+        <aside className="left-panel">
           <div className="panel-box">
-            <TopStockPanel />
+            <EconomicIndicators />
           </div>
           <div className="panel-box">
-            <PopularNewsPanel />
+            <MacroNewsPanel />
+          </div>
+        </aside>
+        {/* 중앙: 테마별 보기 */}
+        <main className="center-panel">
+          <ThemeSection />
+        </main>
+        {/* 우측: 주요 일정 + 종목 인기 */}
+        <div className="right-panel">
+          <div className="panel-box">
+            <SchedulePanel />
+          </div>
+          <div className="panel-box">
+            <TopStockPanel />
           </div>
         </div>
       </div>

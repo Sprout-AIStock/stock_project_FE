@@ -1,0 +1,227 @@
+.economic-indicators {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px; /* 패딩 조정 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+  width: 100%; /* 명시적 너비 설정 */
+  box-sizing: border-box; /* 박스 모델 설정 */
+  overflow: hidden; /* 넘침 방지 */
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px; /* 여백 줄임 */
+  padding-bottom: 12px; /* 패딩 줄임 */
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.panel-icon {
+  font-size: 24px;
+  color: #2d72d9;
+  margin-right: 12px;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.loading-message {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-size: 14px;
+}
+
+.indicators-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 그리드 */
+  gap: 8px; /* 간격 더 줄임 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.indicator-item {
+  display: flex;
+  flex-direction: column; /* 세로 배치로 변경 */
+  justify-content: center;
+  align-items: center; /* 중앙 정렬 */
+  padding: 8px 4px; /* 패딩 더 줄임 */
+  background: #f8f9fa;
+  border-radius: 8px; /* 둥근 모서리 더 줄임 */
+  transition: all 0.2s ease;
+  min-height: 50px; /* 최소 높이 더 줄임 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+  border: 1px solid #e9ecef; /* 테두리 추가 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.indicator-item:hover {
+  background: #ffffff;
+  transform: translateY(-2px); /* 위로 살짝 이동 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 그림자 추가 */
+  border-color: #2d72d9; /* 테두리 색상 변경 */
+}
+
+.indicator-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* 간격 줄임 */
+  align-items: center; /* 중앙 정렬 */
+  margin-bottom: 5px; /* 하단 여백 줄임 */
+}
+
+.indicator-name {
+  font-weight: 700; /* 폰트 굵기 증가 */
+  color: #333;
+  font-size: 11px; /* 폰트 크기 더 줄임 */
+  line-height: 1.1; /* 줄 높이 줄임 */
+  margin-bottom: 1px; /* 하단 여백 줄임 */
+  word-break: keep-all; /* 한글 단어 유지 */
+}
+
+.indicator-date {
+  font-size: 8px; /* 폰트 크기 더 줄임 */
+  color: #888; /* 색상 연하게 */
+  line-height: 1.0; /* 줄 높이 더 줄임 */
+  font-weight: 500; /* 폰트 굵기 추가 */
+  word-break: keep-all; /* 한글 단어 유지 */
+}
+
+.indicator-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 중앙 정렬 */
+  gap: 2px; /* 간격 줄임 */
+}
+
+.value {
+  font-weight: 800; /* 폰트 굵기 증가 */
+  font-size: 12px; /* 폰트 크기 더 줄임 */
+  color: #333;
+  line-height: 1.0; /* 줄 높이 더 줄임 */
+  margin-bottom: 1px; /* 하단 여백 줄임 */
+  word-break: keep-all; /* 숫자 단위 유지 */
+}
+
+.change-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trend-icon {
+  font-size: 14px;
+}
+
+.trend-up {
+  color: #22c55e;
+}
+
+.trend-down {
+  color: #ef4444;
+}
+
+.trend-stable {
+  color: #f59e0b;
+}
+
+.change {
+  font-size: 9px; /* 폰트 크기 더 줄임 */
+  font-weight: 600;
+}
+
+.change-up {
+  color: #22c55e;
+}
+
+.change-down {
+  color: #ef4444;
+}
+
+.change-stable {
+  color: #f59e0b;
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .indicators-list {
+    grid-template-columns: repeat(4, 1fr); /* 4열 유지 */
+    gap: 7px;
+  }
+  
+  .indicator-item {
+    min-height: 48px;
+    padding: 7px 3px;
+  }
+  
+  .indicator-name {
+    font-size: 10px;
+  }
+  
+  .value {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .indicators-list {
+    grid-template-columns: repeat(3, 1fr); /* 중간 화면에서는 3열 */
+    gap: 8px;
+  }
+  
+  .indicator-item {
+    min-height: 50px;
+    padding: 8px 4px;
+  }
+  
+  .indicator-name {
+    font-size: 11px;
+  }
+  
+  .value {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .economic-indicators {
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  
+  .panel-title {
+    font-size: 18px;
+  }
+  
+  .indicators-list {
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 2열 */
+    gap: 8px;
+  }
+  
+  .indicator-item {
+    padding: 10px 6px;
+    min-height: 55px;
+  }
+  
+  .indicator-name {
+    font-size: 12px;
+  }
+  
+  .value {
+    font-size: 13px;
+  }
+  
+  .indicator-date {
+    font-size: 9px;
+  }
+  
+  .change {
+    font-size: 10px;
+  }
+}

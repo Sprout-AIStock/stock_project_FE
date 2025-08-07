@@ -6,7 +6,7 @@ const ThemeSection = () => {
     const [activeTab, setActiveTab] = useState('기술');
 
     const themes = {
-        '기술': { 
+        '기술': {
             icon: <FaIndustry />,
             color: '#3b82f6',
             stocks: ['삼성전자', '네이버', '카카오', 'LG전자', 'SK하이닉스', '엔씨소프트'],
@@ -17,7 +17,7 @@ const ThemeSection = () => {
                 { title: 'LG전자, 스마트홈 기술 혁신 발표', date: '2024-08-04' }
             ]
         },
-        '바이오': { 
+        '바이오': {
             icon: <FaDna />,
             color: '#10b981',
             stocks: ['셀트리온', '삼성바이오로직스', '한미약품', '유한양행', '대웅제약', '녹십자'],
@@ -28,7 +28,7 @@ const ThemeSection = () => {
                 { title: '한미약품, 혁신 신약 개발 성과 발표', date: '2024-08-03' }
             ]
         },
-        '소비재': { 
+        '소비재': {
             icon: <FaShoppingCart />,
             color: '#f59e0b',
             stocks: ['아모레퍼시픽', 'LG생활건강', '롯데케미칼', 'CJ제일제당', '오리온', '농심'],
@@ -39,7 +39,7 @@ const ThemeSection = () => {
                 { title: '식품업계, 건강 기능성 제품 트렌드', date: '2024-08-02' }
             ]
         },
-        '에너지': { 
+        '에너지': {
             icon: <FaOilCan />,
             color: '#ef4444',
             stocks: ['SK이노베이션', 'GS칼텍스', '한국전력', 'SK가스', '한국가스공사', 'S-Oil'],
@@ -60,7 +60,7 @@ const ThemeSection = () => {
                 <FaNewspaper className="panel-icon" />
                 <h2 className="panel-title">섹터별 종목 & 뉴스</h2>
             </div>
-            
+
             {/* 탭 네비게이션 */}
             <div className="tab-navigation">
                 {Object.keys(themes).map((themeName) => (
@@ -68,9 +68,9 @@ const ThemeSection = () => {
                         key={themeName}
                         className={`tab-button ${activeTab === themeName ? 'active' : ''}`}
                         onClick={() => setActiveTab(themeName)}
-                        style={{'--theme-color': themes[themeName].color}}
+                        style={{ '--theme-color': themes[themeName].color }}
                     >
-                        <span className="tab-icon" style={{color: themes[themeName].color}}>
+                        <span className="tab-icon" style={{ color: themes[themeName].color }}>
                             {themes[themeName].icon}
                         </span>
                         <span className="tab-name">{themeName}</span>
@@ -79,7 +79,7 @@ const ThemeSection = () => {
             </div>
 
             {/* 활성 탭 콘텐츠 */}
-            <div className="tab-content" style={{'--theme-color': currentTheme.color}}>
+            <div className="tab-content" style={{ '--theme-color': currentTheme.color }}>
                 <div className="content-grid">
                     {/* 주요 종목 섹션 */}
                     <div className="stocks-section">

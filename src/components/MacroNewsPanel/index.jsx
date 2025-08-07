@@ -11,10 +11,10 @@ export default function MacroNewsPanel() {
 
     return (
         <div className="macro-panel">
-            <h2 className="macro-title">
-                <FaNewspaper className="macro-icon" />
-                거시경제 주요 뉴스
-            </h2>
+            <div className="panel-header">
+                <FaNewspaper className="panel-icon" />
+                <h2 className="panel-title">거시경제 주요 뉴스</h2>
+            </div>
             <ul className="macro-news-list">
                 {newsList.map((item, index) => (
                     <li key={index} className="macro-news-item">

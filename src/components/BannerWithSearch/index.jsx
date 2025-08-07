@@ -47,10 +47,19 @@ export default function BannerWithSearch() {
         setQuery(value);
 
         if (value.trim().length > 0) {
-            const filtered = stockDatabase.filter(stock =>
-                stock.name.includes(value) ||
-                stock.code.includes(value)
-            ).slice(0, 8); // 최대 8개만 표시
+            // 띄어쓰기 제거한 검색어로 비교
+            const searchTerm = value.trim().replace(/\s+/g, '');
+            const searchTermLower = searchTerm.toLowerCase();
+
+            const filtered = stockDatabase.filter(stock => {
+                const stockNameNoSpace = stock.name.replace(/\s+/g, '');
+                const stockNameLower = stockNameNoSpace.toLowerCase();
+
+                return stockNameNoSpace.includes(searchTerm) ||
+                    stockNameLower.includes(searchTermLower) ||
+                    stock.name.includes(value.trim()) ||
+                    stock.code.includes(value.trim());
+            }).slice(0, 8); // 최대 8개만 표시
 
             setSuggestions(filtered);
             setShowSuggestions(true);
@@ -112,13 +121,21 @@ export default function BannerWithSearch() {
         setIsSearching(true);
         setShowSuggestions(false);
 
-        // 1. 먼저 stockDatabase에서 종목 코드 찾기
+        // 1. 먼저 stockDatabase에서 종목 코드 찾기 (띄어쓰기 무시)
         let stockCode = null;
-        const foundStock = stockDatabase.find(stock =>
-            stock.name === keyword ||
-            stock.name.toLowerCase() === keyword.toLowerCase() ||
-            stock.code === keyword
-        );
+        const keywordNoSpace = keyword.replace(/\s+/g, '');
+        const keywordLower = keywordNoSpace.toLowerCase();
+
+        const foundStock = stockDatabase.find(stock => {
+            const stockNameNoSpace = stock.name.replace(/\s+/g, '');
+            const stockNameLower = stockNameNoSpace.toLowerCase();
+
+            return stock.name === keyword ||
+                stock.name.toLowerCase() === keyword.toLowerCase() ||
+                stockNameNoSpace === keywordNoSpace ||
+                stockNameLower === keywordLower ||
+                stock.code === keyword;
+        });
 
         if (foundStock) {
             stockCode = foundStock.code;
@@ -135,7 +152,7 @@ export default function BannerWithSearch() {
                     stockCode = "005930"; // 기본값: 삼성전자
                 }
             } catch (err) {
-                // API 호출 실패 시 Mock 데이터 사용
+                // API 호출 실패 시 Mock 데이터 사용 (띄어쓰기 무시)
                 const mockStockMapping = {
                     "삼성전자": "005930",
                     "sk하이닉스": "000660",
@@ -143,11 +160,16 @@ export default function BannerWithSearch() {
                     "네이버": "035420",
                     "카카오": "035720",
                     "현대차": "005380",
-                    "셀트리온": "068270"
+                    "셀트리온": "068270",
                 };
 
-                stockCode = mockStockMapping[keyword.toLowerCase()] ||
+                // 띄어쓰기 제거한 키워드로도 검색
+                const keywordNoSpaceForMapping = keywordNoSpace.toLowerCase();
+                const keywordOriginalLower = keyword.toLowerCase();
+
+                stockCode = mockStockMapping[keywordOriginalLower] ||
                     mockStockMapping[keyword] ||
+                    mockStockMapping[keywordNoSpaceForMapping] ||
                     "005930"; // 기본값: 삼성전자
 
                 console.log('API 호출 실패, Mock 데이터 사용');
