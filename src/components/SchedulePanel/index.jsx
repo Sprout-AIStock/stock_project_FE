@@ -14,7 +14,7 @@ export default function SchedulePanel() {
                 date: "2024-08-01",
                 time: "03:00",
                 type: "monetary",
-                importance: "high",
+                importance: "high", // 미국 금리 정책 - 글로벌 경제에 매우 중요
                 description: "연방준비제도 금리 결정"
             },
             {
@@ -22,7 +22,7 @@ export default function SchedulePanel() {
                 date: "2024-08-01",
                 time: "09:00",
                 type: "trade",
-                importance: "high",
+                importance: "high", // 국제 무역 정책 - 매우 중요
                 description: "미중 무역 관련 새로운 협약"
             },
             {
@@ -30,7 +30,7 @@ export default function SchedulePanel() {
                 date: "2024-08-05",
                 time: "10:00",
                 type: "economic",
-                importance: "medium",
+                importance: "medium", // 국내 경제지표 - 보통 중요
                 description: "2분기 경제성장률 발표"
             },
             {
@@ -38,7 +38,7 @@ export default function SchedulePanel() {
                 date: "2024-08-07",
                 time: "22:30",
                 type: "employment",
-                importance: "high",
+                importance: "high", // 미국 고용 상황 - 매우 중요
                 description: "7월 비농업 고용 지표"
             },
             {
@@ -46,7 +46,7 @@ export default function SchedulePanel() {
                 date: "2024-08-15",
                 time: "21:00",
                 type: "monetary",
-                importance: "medium",
+                importance: "medium", // 유럽 금리 정책 - 보통 중요
                 description: "유럽중앙은행 금리 결정"
             }
         ];
@@ -55,13 +55,14 @@ export default function SchedulePanel() {
         setLoading(false);
     }, []);
 
-    const getTypeIcon = (type) => {
+    const getTypeIcon = (type, importance) => {
+        const iconClass = `type-icon ${type} importance-${importance}`;
         switch (type) {
-            case 'monetary': return <TbFlag className="type-icon monetary" />;
-            case 'trade': return <TbFlag className="type-icon trade" />;
-            case 'economic': return <TbFlag className="type-icon economic" />;
-            case 'employment': return <TbFlag className="type-icon employment" />;
-            default: return <TbCalendarEvent className="type-icon default" />;
+            case 'monetary': return <TbFlag className={iconClass} />;
+            case 'trade': return <TbFlag className={iconClass} />;
+            case 'economic': return <TbFlag className={iconClass} />;
+            case 'employment': return <TbFlag className={iconClass} />;
+            default: return <TbCalendarEvent className={iconClass} />;
         }
     };
 
@@ -91,7 +92,7 @@ export default function SchedulePanel() {
                 {schedules.map((schedule, index) => (
                     <div key={index} className={`schedule-item ${getImportanceClass(schedule.importance)}`}>
                         <div className="schedule-left">
-                            {getTypeIcon(schedule.type)}
+                            {getTypeIcon(schedule.type, schedule.importance)}
                             <div className="schedule-content">
                                 <div className="schedule-title">{schedule.title}</div>
                                 <div className="schedule-description">{schedule.description}</div>

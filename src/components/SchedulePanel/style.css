@@ -57,16 +57,17 @@
   transform: translateX(2px);
 }
 
+/* 경제적 중요도에 따른 색상 체계 */
 .schedule-item.importance-high {
-  border-left-color: #ef4444;
+  border-left-color: #dc2626; /* 진한 빨간색 - 매우 중요 */
 }
 
 .schedule-item.importance-medium {
-  border-left-color: #f59e0b;
+  border-left-color: #f59e0b; /* 주황색 - 보통 중요 */
 }
 
 .schedule-item.importance-low {
-  border-left-color: #22c55e;
+  border-left-color: #16a34a; /* 초록색 - 덜 중요 */
 }
 
 .schedule-left {
@@ -81,20 +82,17 @@
   flex-shrink: 0;
 }
 
-.type-icon.monetary {
-  color: #ef4444; /* 구분선 high와 동일 - 빨간색 */
+/* 경제적 중요도에 따른 아이콘 색상 - 구분선과 동일 */
+.type-icon.importance-high {
+  color: #dc2626; /* 진한 빨간색 - 매우 중요 (FOMC, 고용지표 등) */
 }
 
-.type-icon.trade {
-  color: #ef4444; /* 구분선 high와 동일 - 빨간색 */
+.type-icon.importance-medium {
+  color: #f59e0b; /* 주황색 - 보통 중요 (ECB, GDP 등) */
 }
 
-.type-icon.economic {
-  color: #f59e0b; /* 구분선 medium과 동일 - 주황색 */
-}
-
-.type-icon.employment {
-  color: #ef4444; /* 구분선 high와 동일 - 빨간색 */
+.type-icon.importance-low {
+  color: #16a34a; /* 초록색 - 덜 중요 (일반 경제지표) */
 }
 
 .type-icon.default {
