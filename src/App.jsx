@@ -8,7 +8,11 @@ import SchedulePanel from './components/SchedulePanel';
 import TopStockPanel from './components/TopStockPanel';
 import PopularNewsPanel from './components/PopularNewsPanel';
 import StockDetail from './pages/StockDetail';
+import { enableAPI } from './utils/apiToggle';
 import './App.css';
+
+// API 강제 활성화
+enableAPI();
 
 function MainPage() {
   return (

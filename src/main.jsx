@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { disableAPI } from './utils/apiToggle'
+import { disableAPI, enableAPI } from './utils/apiToggle'
 
-disableAPI();
+enableAPI();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

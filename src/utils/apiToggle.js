@@ -18,12 +18,7 @@ export const disableAPI = () => {
 };
 
 export const enableAPI = () => {
-    if (apiBlocked) {
-        window.fetch = originalFetch;
-        apiBlocked = false;
-        console.log('✅ API 호출이 활성화되었습니다');
-    }
+    window.fetch = originalFetch;
+    apiBlocked = false;
+    console.log('✅ API 호출이 활성화되었습니다');
 };
-
-// 앱 시작 시 API 비활성화
-disableAPI();
