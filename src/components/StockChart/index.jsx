@@ -18,6 +18,8 @@ export default function StockChart({ code }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [stockName, setStockName] = useState("");
+    // 종목명 별도 fetch 상태
+    const [resolvedName, setResolvedName] = useState("");
     const [chartType, setChartType] = useState("daily");
     const [rawData, setRawData] = useState(null);
     const [chartData, setChartData] = useState([]);
@@ -25,6 +27,26 @@ export default function StockChart({ code }) {
     // 차트 API 호출 (chartType에 따라 분기)
     useEffect(() => {
         if (!code) return;
+
+        // 종목명 별도 API 호출
+        const fetchStockName = async () => {
+            try {
+                const url = `${API_BASE}/api/stock/${code}/name`;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const result = await response.json();
+                    // 래퍼 구조: { code, message, data: { stockName } }
+                    const name = result?.data?.stockName || result?.stockName || "";
+                    setResolvedName(name);
+                } else {
+                    setResolvedName("");
+                }
+            } catch {
+                setResolvedName("");
+            }
+        };
+
+        fetchStockName();
 
         const fetchStockData = async () => {
             try {
@@ -40,8 +62,6 @@ export default function StockChart({ code }) {
                     apiUrl = `${API_BASE}/api/stock/${code}/chart/monthly?count=12`;
                 }
 
-                console.log(`🔗 API 요청: ${apiUrl}`);
-
                 const response = await fetch(apiUrl, {
                     method: 'GET',
                     headers: {
@@ -49,15 +69,11 @@ export default function StockChart({ code }) {
                     },
                 });
 
-                console.log('📡 응답 상태:', response.status, response.statusText);
-
                 if (!response.ok) {
                     throw new Error(`API 호출 실패: ${response.status} ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                console.log(`📊 ${chartType} 차트 원본 데이터:`, data);
-
                 let dealTrendInfos = [];
                 const payload = data.data || data;
                 if (Array.isArray(payload)) {
@@ -67,19 +83,14 @@ export default function StockChart({ code }) {
                 } else if (Array.isArray(payload.data)) {
                     dealTrendInfos = payload.data;
                 }
-                const stockName = payload.name || payload.stockName || code;
+                setRawData({ dealTrendInfos });
+                processChartData({ dealTrendInfos }, chartType);
 
-                setStockName(stockName);
-                setRawData({ dealTrendInfos, stockName });
-                processChartData({ dealTrendInfos, stockName }, chartType);
-
-                // 안내: 데이터가 0개면 에러 대신 안내만
                 if (!dealTrendInfos || dealTrendInfos.length === 0) {
                     setError("차트 데이터가 없습니다.");
                 }
 
             } catch (err) {
-                console.error('차트 데이터 로딩 실패:', err);
                 setError(`차트 데이터를 불러올 수 없습니다: ${err.message}`);
             } finally {
                 setLoading(false);
@@ -223,7 +234,7 @@ export default function StockChart({ code }) {
     return (
         <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
             <h3 style={{ marginBottom: '20px', color: '#333' }}>
-                {stockName} 주가 차트 ({code})
+                {(resolvedName || stockName || code)} 주가 차트 ({code})
             </h3>
 
             {/* 차트 타입 선택 버튼 (항상 표시) */}
