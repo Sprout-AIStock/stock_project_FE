@@ -1,0 +1,140 @@
+.report-chat-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.report-chat-main {
+  min-width: 0;
+}
+
+.report-chat-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  height: fit-content;
+  max-height: 80vh;
+  position: sticky;
+  top: 20px;
+}
+
+.chat-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-weight: 700;
+  background: #f8fafc;
+  color: #1f2937;
+}
+
+.chat-messages {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  background: #f8fafc;
+  max-height: 400px;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid #f1f5f9;
+  background: #fff;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: none;
+}
+
+.chat-send-btn {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #2d72d9;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.chat-send-btn:hover {
+  background: #1e5ba8;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message-user {
+  text-align: right;
+}
+
+.message-assistant {
+  text-align: left;
+}
+
+.message-bubble {
+  display: inline-block;
+  padding: 8px 10px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  max-width: 280px;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message-bubble-user {
+  background: #2d72d9;
+  color: #fff;
+}
+
+.message-bubble-assistant {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #f1f5f9;
+}
+
+/* 반응형 레이아웃 */
+@media (max-width: 1024px) {
+  .report-chat-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .report-chat-sidebar {
+    position: relative;
+    top: 0;
+    order: -1;
+    max-height: 300px;
+  }
+
+  .chat-messages {
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-chat-container {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .message-bubble {
+    max-width: 220px;
+    font-size: 13px;
+  }
+}

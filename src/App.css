@@ -25,101 +25,94 @@ body {
   background-color: #ffffff;
   margin: 0;
   font-family: 'Noto Sans KR', sans-serif;
+  padding-top: 10px;
 }
 
 /* 배너 검색창 */
-.banner-area {
-  display: flex;
-  justify-content: center;
-  padding: 40px 0 24px;
+.banner-area { 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  padding: 0;
 }
 
-/* 전체 3열 레이아웃 */
-.layout-container {
+/* 3열 그리드 레이아웃 */
+.three-column-layout {
   display: grid;
-  grid-template-columns: 320px 1.4fr 280px; /* 좌측 패널 크기 증가 */
-  gap: 32px; /* 더 넉넉한 간격 */
-  padding: 0 20px; /* 좌우 여백 */
+  grid-template-columns: 320px 1fr 320px;
+  gap: 12px;
+  padding: 0 20px;
   width: 100%;
-  max-width: 1600px; /* 전체 크기 증가 */
-  margin: 0 auto; /* 중앙 정렬 */
-  box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+  max-width: 1600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* 각 열 스타일 */
+.left-column, .center-column, .right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 /* 각 패널의 폭 고정 */
-.left-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* panel-box 간격은 내부에서 처리 */
-  margin-top: -250px; /* 위로 이동 */
-}
-
+/* 중앙 컨테이너 (테마만) */
+/* 중앙(섹터별 뉴스) 카드 스타일 */
 .center-panel {
-  padding: 32px; /* 넉넉한 패딩 */
+  padding: 12px;
   background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* panel간격은 margin-bottom으로 처리 */
-  margin-top: -250px; /* 위로 이동 */
-}
+/* 기존 좌/우 패널 레이아웃 제거 */
 
 /* 공통 패널 박스 */
 .panel-box {
   background-color: #ffffff;
   border-radius: 12px;
-  padding: 8px;
+  padding: 0;
 }
 
 /* 반응형 레이아웃 */
 @media (max-width: 1200px) {
-  .layout-container {
-    grid-template-columns: 280px 1.3fr 240px; /* 좌측 패널 유지 */
-    gap: 24px;
-    padding: 0 16px;
-  }
-  
-  .center-panel {
-    padding: 24px;
-  }
+  .three-column-layout { grid-template-columns: 260px 1fr 260px; gap: 10px; padding: 0 16px; }
+  .center-panel { padding: 14px; }
 }
 
 @media (max-width: 1024px) {
-  .layout-container {
-    grid-template-columns: 240px 1fr 220px; /* 좌측 패널 약간 줄임 */
-    gap: 20px;
-    padding: 0 12px;
-    max-width: 100%;
-  }
-  
-  .center-panel {
-    padding: 20px;
-  }
+  .three-column-layout { grid-template-columns: 220px 1fr 220px; gap: 8px; padding: 0 12px; max-width: 100%; }
+  .center-panel { padding: 12px; }
 }
 
 @media (max-width: 768px) {
-  .layout-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 0 8px;
+  .three-column-layout { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 6px; 
+    padding: 0 8px; 
   }
   
-  .left-panel, .right-panel, .center-panel {
-    margin-top: 0;
+  /* 모바일에서 AI 대화를 상단으로 이동 */
+  .right-column {
+    order: -1;
   }
   
-  .center-panel {
-    padding: 16px;
-    order: -1; /* 모바일에서 중앙이 맨 위로 */
-  }
+  .center-panel { padding: 10px; }
+  .banner-area { padding: 6px 0 8px; }
   
-  .banner-area {
-    padding: 20px 0 16px;
+  /* 모바일에서 패널 간격 조정 */
+  .panel-box {
+    margin-bottom: 12px;
+  }
+}
+
+/* 태블릿 사이즈 개선 */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .three-column-layout { 
+    grid-template-columns: 240px 1fr 240px; 
+    gap: 8px; 
+    padding: 0 12px; 
   }
 }

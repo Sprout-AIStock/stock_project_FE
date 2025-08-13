@@ -13,6 +13,12 @@ export default function StockDetail() {
     const navigate = useNavigate();
     const [stockName, setStockName] = useState("");
 
+	// AI 대화창 상태
+	const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+	const [chatInput, setChatInput] = useState("");
+	const [chatLoading, setChatLoading] = useState(false);
+	const [messages, setMessages] = useState([{ role: 'assistant', content: '종목/시장 관련 궁금한 점을 물어보세요.' }]);
+
     useEffect(() => {
         // Mock 종목명 매핑 (BannerWithSearch와 동일하게 유지)
         const mockCodeToName = {
@@ -46,6 +52,38 @@ export default function StockDetail() {
         setStockName(mockCodeToName[code] || code);
     }, [code]);
 
+	// 종목 변경 시 첫 메시지 갱신
+	useEffect(() => {
+		if (!code) return;
+		setMessages([{ role: 'assistant', content: `안녕하세요! ${stockName || code}에 대해 궁금한 점을 물어보세요.` }]);
+	}, [code, stockName]);
+
+	const sendChat = async () => {
+		const content = chatInput.trim();
+		if (!content || chatLoading) return;
+		const next = [...messages, { role: 'user', content }];
+		setMessages(next);
+		setChatInput("");
+		setChatLoading(true);
+		try {
+			const res = await fetch(`${base}/api/chat/stock`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ question: content, stockCode: code })
+			});
+			const body = await res.json().catch(() => ({}));
+			if (!res.ok) {
+				throw new Error(body.message || `질의 실패 (${res.status})`);
+			}
+			const data = body?.data || body;
+			setMessages([...next, { role: 'assistant', content: data.answer || '(빈 응답)' }]);
+		} catch (err) {
+			setMessages([...next, { role: 'assistant', content: `오류: ${err.message}` }]);
+		} finally {
+			setChatLoading(false);
+		}
+	};
+
     if (!code) {
         return (
             <div className="stock-detail-container">
@@ -64,7 +102,7 @@ export default function StockDetail() {
 
     return (
         <div className="stock-detail-container">
-            <div className="single-column-layout">
+            <div className="stock-detail-main">
                 {/* 뒤로가기 버튼 */}
                 <div className="back-navigation">
                     <button className="back-button" onClick={() => navigate('/')}>
@@ -112,6 +150,32 @@ export default function StockDetail() {
                     </div>
                 </div>
             </div>
+
+			{/* 우측 대화창 */}
+			<div className="stock-detail-sidebar">
+				<div className="chat-header">AI 대화</div>
+				<div className="chat-messages">
+					{messages.map((m, i) => (
+						<div key={i} className={`message ${m.role === 'user' ? 'message-user' : 'message-assistant'}`}>
+							<div className={`message-bubble ${m.role === 'user' ? 'message-bubble-user' : 'message-bubble-assistant'}`}>
+								{m.content}
+							</div>
+						</div>
+					))}
+				</div>
+				<div className="chat-input-area">
+					<input
+						value={chatInput}
+						onChange={(e) => setChatInput(e.target.value)}
+						onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }}
+						placeholder="메시지를 입력하세요"
+						className="chat-input"
+					/>
+					<button onClick={sendChat} disabled={chatLoading} className="chat-send-btn">
+						{chatLoading ? '전송중' : '보내기'}
+					</button>
+				</div>
+			</div>
         </div>
     );
 }

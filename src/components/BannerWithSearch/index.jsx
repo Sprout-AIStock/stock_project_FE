@@ -10,35 +10,30 @@ export default function BannerWithSearch() {
     const [isSearching, setIsSearching] = useState(false);
     const [showRelatedSearches, setShowRelatedSearches] = useState(false);
     const [relatedSearches, setRelatedSearches] = useState([]);
-    const [allStocks, setAllStocks] = useState([]); // 전체 종목 리스트
+    const [allStocks, setAllStocks] = useState([]); // 로컬 키워드 리스트
     const navigate = useNavigate();
 
-    // 전체 종목 리스트를 받아오는 함수 (컴포넌트 내부 구현)
-    async function fetchAllStocks() {
-        try {
-            const response = await fetch('http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stocks/all');
-            if (response.ok) {
-                const results = await response.json();
-                return results || [];
-            }
-        } catch (error) {
-            console.error('전체 종목 리스트 API 호출 실패:', error);
-        }
-        return [];
-    }
+    // 간단한 로컬 추천 키워드 세트(임시 대체)
+    const fallbackKeywords = [
+        { stockName: '삼성전자', stockCode: '005930' },
+        { stockName: 'SK하이닉스', stockCode: '000660' },
+        { stockName: '네이버', stockCode: '035420' },
+        { stockName: '카카오', stockCode: '035720' },
+        { stockName: '현대차', stockCode: '005380' },
+        { stockName: 'LG에너지솔루션', stockCode: '373220' },
+    ];
 
     // 컴포넌트 마운트 시 전체 종목 리스트 받아오기
     useEffect(() => {
-        (async () => {
-            const stocks = await fetchAllStocks();
-            setAllStocks(stocks);
-        })();
+        // 서버 목록 API 제거: 로컬 키워드 사용
+        setAllStocks(fallbackKeywords);
     }, []);
 
     // 정확한 종목명 검색
     const searchStockByName = async (stockName) => {
         try {
-            const response = await fetch(`http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stocks/search?name=${encodeURIComponent(stockName)}`);
+            const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+            const response = await fetch(`${base}/api/stocks/search?name=${encodeURIComponent(stockName)}`);
             if (response.ok) {
                 const result = await response.json();
                 return result;

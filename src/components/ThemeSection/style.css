@@ -10,9 +10,9 @@
 .panel-header {
   display: flex;
   align-items: center;
-  margin-bottom: 32px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .panel-icon {
@@ -22,7 +22,7 @@
 }
 
 .panel-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #333;
   margin: 0;
@@ -32,8 +32,8 @@
 .tab-navigation {
   display: flex;
   gap: 8px;
-  margin-bottom: 32px;
-  padding: 8px;
+  margin-bottom: 16px;
+  padding: 6px;
   background: #f8f9fa;
   border-radius: 12px;
 }
@@ -85,15 +85,15 @@
 .tab-content {
   background: #f8f9fa;
   border-radius: 16px;
-  padding: 32px;
+  padding: 16px;
   border-left: 4px solid var(--theme-color, #2d72d9);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .content-grid {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 12px;
 }
 
 /* 섹션 공통 스타일 */
@@ -175,25 +175,25 @@
 /* 관련 뉴스 섹션 */
 .news-section {
   background: #ffffff;
-  padding: 24px;
+  padding: 12px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
 }
 
 .news-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .news-card {
-  padding: 18px;
+  padding: 10px;
   background: #f8f9fa;
   border: 1px solid #e9ecef;
   border-radius: 8px;
   transition: all 0.2s ease;
   cursor: pointer;
-  min-height: 70px;
+  min-height: 46px;
   display: flex;
   flex-direction: column;
   justify-content: center;

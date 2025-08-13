@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { FaIndustry, FaDna, FaShoppingCart, FaOilCan, FaNewspaper } from 'react-icons/fa';
@@ -40,36 +40,60 @@ const ThemeSection = () => {
         '기술': {
             icon: <FaIndustry />,
             color: '#3b82f6',
-            stocks: [], // BE에서 받아올 데이터로 대체 예정
-            news: []
+            stocks: []
         },
         '바이오': {
             icon: <FaDna />,
             color: '#10b981',
-            stocks: [],
-            news: []
+            stocks: []
         },
         '소비재': {
             icon: <FaShoppingCart />,
             color: '#f59e0b',
-            stocks: [],
-            news: []
+            stocks: []
         },
         '에너지': {
             icon: <FaOilCan />,
             color: '#ef4444',
-            stocks: [],
-            news: []
+            stocks: []
         }
     };
 
     const currentTheme = themes[activeTab];
 
+    // 테마 뉴스 상태
+    const [themeNews, setThemeNews] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    // 테마 탭 변경 시 뉴스 호출 (/api/news/theme/{themeName})
+    useEffect(() => {
+        const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+        const keywordMap = { '기술': '반도체', '바이오': '바이오', '소비재': '소비재', '에너지': '에너지' };
+        const q = keywordMap[activeTab] || activeTab;
+        setLoading(true);
+        setError('');
+        fetch(`${base}/api/news/theme/${encodeURIComponent(q)}?display=5&start=1`)
+            .then(res => res.json())
+            .then(raw => {
+                const payload = raw?.data || raw; // ApiResponse 언랩
+                const items = Array.isArray(payload) ? payload : [];
+                const formatted = items.map(it => ({
+                    title: it.title,
+                    date: (it.pubDate || '').split(' ').slice(0, 4).join(' '),
+                    url: it.link || it.originallink || '#'
+                }));
+                setThemeNews(formatted);
+            })
+            .catch(() => setThemeNews([]))
+            .finally(() => setLoading(false));
+    }, [activeTab]);
+
     return (
         <div className="theme-wrapper">
             <div className="panel-header">
                 <FaNewspaper className="panel-icon" />
-                <h2 className="panel-title">섹터별 종목 & 뉴스</h2>
+                <h2 className="panel-title">섹터별 뉴스</h2>
             </div>
 
             {/* 탭 네비게이션 */}
@@ -92,51 +116,27 @@ const ThemeSection = () => {
             {/* 활성 탭 콘텐츠 */}
             <div className="tab-content" style={{ '--theme-color': currentTheme.color }}>
                 <div className="content-grid">
-                    {/* 주요 종목 섹션 */}
-                    <div className="stocks-section">
-                        <div className="section-header">
-                            <h3 className="section-title">주요 종목</h3>
-                            <span className="stocks-count">{currentTheme.stocks.length}개</span>
-                        </div>
-                        <div className="stocks-grid">
-                            {/* 주요 종목은 BE에서 받아온 배열로 렌더링 예정. 틀만 구현 */}
-                            {currentTheme.stocks.length === 0 ? (
-                                <div className="stock-card empty">주요 종목 데이터 없음</div>
-                            ) : (
-                                currentTheme.stocks.map((stock, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="stock-card"
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            // stock.code가 있다고 가정하고 상세페이지 이동
-                                            if (stock.code) {
-                                                navigate(`/stock/${stock.code}`);
-                                            } else {
-                                                alert('종목 코드 정보를 찾을 수 없습니다.');
-                                            }
-                                        }}
-                                    >
-                                        <span className="theme-stock-name">{stock.name || stock}</span>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-
-                    {/* 관련 뉴스 섹션 */}
+                    {/* 섹터별 뉴스 섹션 */}
                     <div className="news-section">
                         <div className="section-header">
                             <h3 className="section-title">관련 뉴스</h3>
-                            <span className="news-count">{currentTheme.news.length}개</span>
+                            <span className="news-count">{themeNews.length}개</span>
                         </div>
                         <div className="news-grid">
-                            {currentTheme.news.map((newsItem, idx) => (
-                                <div key={idx} className="news-card">
-                                    <div className="news-headline">{newsItem.title}</div>
-                                    <div className="news-date">{newsItem.date}</div>
-                                </div>
-                            ))}
+                            {loading ? (
+                                <div className="news-card">뉴스 로딩 중...</div>
+                            ) : error ? (
+                                <div className="news-card">뉴스 로딩 실패</div>
+                            ) : themeNews.length === 0 ? (
+                                <div className="news-card">관련 뉴스 없음</div>
+                            ) : (
+                                themeNews.map((newsItem, idx) => (
+                                    <div key={idx} className="news-card">
+                                        <div className="news-headline">{newsItem.title}</div>
+                                        <div className="news-date">{newsItem.date}</div>
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>

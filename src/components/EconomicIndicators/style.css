@@ -1,21 +1,6 @@
-.economic-indicators {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 18px; /* 패딩 조정 */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  margin-bottom: 24px;
-  width: 100%; /* 명시적 너비 설정 */
-  box-sizing: border-box; /* 박스 모델 설정 */
-  overflow: hidden; /* 넘침 방지 */
-}
+.economic-indicators { background: #ffffff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 0; width: 100%; box-sizing: border-box; overflow: hidden; }
 
-.panel-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px; /* 여백 줄임 */
-  padding-bottom: 12px; /* 패딩 줄임 */
-  border-bottom: 2px solid #f0f0f0;
-}
+.panel-header { display: flex; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
 
 .panel-icon {
   font-size: 24px;

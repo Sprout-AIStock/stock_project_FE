@@ -12,6 +12,8 @@ import {
     ReferenceLine
 } from 'recharts';
 
+const API_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+
 export default function StockChart({ code }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -31,11 +33,11 @@ export default function StockChart({ code }) {
 
                 let apiUrl = '';
                 if (chartType === 'daily') {
-                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/daily?count=30`;
+                    apiUrl = `${API_BASE}/api/stock/${code}/chart/daily?count=30`;
                 } else if (chartType === 'weekly') {
-                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/weekly?count=20`;
+                    apiUrl = `${API_BASE}/api/stock/${code}/chart/weekly?count=20`;
                 } else if (chartType === 'monthly') {
-                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/monthly?count=12`;
+                    apiUrl = `${API_BASE}/api/stock/${code}/chart/monthly?count=12`;
                 }
 
                 console.log(`🔗 API 요청: ${apiUrl}`);
@@ -56,16 +58,16 @@ export default function StockChart({ code }) {
                 const data = await response.json();
                 console.log(`📊 ${chartType} 차트 원본 데이터:`, data);
 
-                // 응답이 배열, dealTrendInfos, data.data 등 다양한 구조 지원
                 let dealTrendInfos = [];
-                if (Array.isArray(data)) {
-                    dealTrendInfos = data;
-                } else if (Array.isArray(data.dealTrendInfos)) {
-                    dealTrendInfos = data.dealTrendInfos;
-                } else if (Array.isArray(data.data)) {
-                    dealTrendInfos = data.data;
+                const payload = data.data || data;
+                if (Array.isArray(payload)) {
+                    dealTrendInfos = payload;
+                } else if (Array.isArray(payload.dealTrendInfos)) {
+                    dealTrendInfos = payload.dealTrendInfos;
+                } else if (Array.isArray(payload.data)) {
+                    dealTrendInfos = payload.data;
                 }
-                const stockName = data.name || data.stockName || code;
+                const stockName = payload.name || payload.stockName || code;
 
                 setStockName(stockName);
                 setRawData({ dealTrendInfos, stockName });

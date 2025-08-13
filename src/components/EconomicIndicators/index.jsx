@@ -5,99 +5,70 @@ import "./style.css";
 export default function EconomicIndicators() {
     const [indicators, setIndicators] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        // Mock 경제 지표 데이터 (3x4 그리드용)
-        const mockIndicators = [
-            {
-                name: "금리",
-                value: "5.25%",
-                change: "+0.25%",
-                trend: "up",
-                date: "미국"
-            },
-            {
-                name: "금",
-                value: "$2,045",
-                change: "+$12",
-                trend: "up",
-                date: "온스당"
-            },
-            {
-                name: "환율",
-                value: "1,350원",
-                change: "+15원",
-                trend: "up",
-                date: "달러/원"
-            },
-            {
-                name: "고용지표",
-                value: "3.7%",
-                change: "-0.1%",
-                trend: "down",
-                date: "실업률"
-            },
-            {
-                name: "유가",
-                value: "$78.50",
-                change: "-$1.20",
-                trend: "down",
-                date: "WTI"
-            },
-            {
-                name: "비트코인",
-                value: "$45,230",
-                change: "+$1,150",
-                trend: "up",
-                date: "BTC/USD"
-            },
-            {
-                name: "인플레이션",
-                value: "3.2%",
-                change: "+0.1%",
-                trend: "up",
-                date: "CPI"
-            },
-            {
-                name: "나스닥",
-                value: "14,567",
-                change: "+125",
-                trend: "up",
-                date: "지수"
-            },
-            {
-                name: "S&P500",
-                value: "4,891",
-                change: "+32",
-                trend: "up",
-                date: "지수"
-            },
-            {
-                name: "코스피",
-                value: "2,654",
-                change: "-12",
-                trend: "down",
-                date: "지수"
-            },
-            {
-                name: "국채수익률",
-                value: "4.15%",
-                change: "+0.05%",
-                trend: "up",
-                date: "10년물"
-            },
-            {
-                name: "달러지수",
-                value: "103.45",
-                change: "+0.25",
-                trend: "up",
-                date: "DXY"
-            }
-        ];
+        const load = async () => {
+            try {
+                setLoading(true);
+                setError("");
+                // BE: 최신 거시 입력(캐시) - /api/market/quad/input/latest (204 가능)
+                const res = await fetch(`/api/market/quad/input/latest`);
+                if (res.status === 204) {
+                    setIndicators([]);
+                    setLoading(false);
+                    return;
+                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const raw = await res.json();
+                const data = raw?.data || raw; // ApiResponse 언랩
 
-        setIndicators(mockIndicators);
-        setLoading(false);
+                const ffr = data.ffr_upper_pct; // %
+                const core = data.core_pce_yoy_pct ?? data.core_cpi_yoy_pct; // %
+                const unemp = data.unemp_rate_pct; // %
+                const unempCh3m = data.unemp_rate_change_3m_pp; // pp
+                const payrolls3m = data.payrolls_3mma_k; // k
+                const claims4w = data.claims_4wma_k; // k
+                const claimsTrend = data.claims_trend; // up/down/flat
+                const policyCh3m = data.policyRateChange3m_bps; // bps
+                const pmiM = data.pmi_mfg?.value;
+                const pmiMCh = data.pmi_mfg?.deltaMoM;
+                const pmiS = data.pmi_svcs?.value;
+                const pmiSCh = data.pmi_svcs?.deltaMoM;
+
+                const realRate = (ffr != null && core != null) ? (ffr - core) : null;
+
+                // 3개 제외(PMI 제조, PMI 서비스, 정책금리 3M)하고 9개 항목 3x3로 구성
+                const itemsAll = [
+                    { name: "FFR 상단", value: fmtPct(ffr), change: fmtBp(policyCh3m), trend: policyCh3m == null ? 'stable' : (policyCh3m > 0 ? 'up' : policyCh3m < 0 ? 'down' : 'stable'), date: "미국 정책금리" },
+                    { name: "코어 물가", value: fmtPct(core), change: "", trend: 'stable', date: data.core_pce_yoy_pct ? "Core PCE YoY" : "Core CPI YoY" },
+                    { name: "실질금리", value: realRate==null?"n/a":`${realRate.toFixed(1)}%`, change: "", trend: realRate!=null && realRate>0? 'up':'stable', date: "FFR-코어" },
+                    { name: "실업률", value: fmtPct(unemp), change: fmtPp(unempCh3m), trend: unempCh3m==null?'stable':(unempCh3m>0?'up':'down'), date: "3개월 변화" },
+                    { name: "고용 3개월 평균", value: payrolls3m==null?"n/a":`+${Math.round(payrolls3m)}k`, change: "", trend: 'stable', date: "비농업" },
+                    { name: "실업수당 4주", value: claims4w==null?"n/a":`${Math.round(claims4w)}k`, change: claimsTrend||"", trend: trendFromStr(claimsTrend), date: "주간" },
+                    { name: "코어PCE", value: data.core_pce_yoy_pct==null?"n/a":`${data.core_pce_yoy_pct.toFixed(1)}%`, change: "", trend: 'stable', date: "YoY" },
+                    { name: "코어CPI", value: data.core_cpi_yoy_pct==null?"n/a":`${data.core_cpi_yoy_pct.toFixed(1)}%`, change: "", trend: 'stable', date: "YoY" },
+                    { name: "스냅샷 시점", value: data.asOf ? data.asOf.split('T')[0] : "n/a", change: "", trend: 'stable', date: "asOf" }
+                ];
+                const items = itemsAll.slice(0, 9);
+
+                setIndicators(items);
+            } catch (e) {
+                setError("지표 로딩 실패");
+                setIndicators([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
     }, []);
+
+    const numTrend = (v) => v==null? 'stable' : (v>0? 'up' : v<0? 'down':'stable');
+    const trendFromStr = (s) => s==='up'? 'up' : s==='down'? 'down' : 'stable';
+    const fmtPct = (v) => v==null? 'n/a' : `${Number(v).toFixed(2)}%`;
+    const fmtPp = (v) => v==null? '' : `${v>0?'+':''}${Number(v).toFixed(1)}pp`;
+    const fmtBp = (v) => v==null? '' : `${v>0?'+':''}${v}bp`;
+    const fmtDelta = (v) => `${v>0?'+':''}${Number(v).toFixed(1)}`;
 
     const getTrendIcon = (trend) => {
         switch (trend) {
@@ -118,6 +89,17 @@ export default function EconomicIndicators() {
             </div>
         );
     }
+    if (error) {
+        return (
+            <div className="economic-indicators">
+                <div className="panel-header">
+                    <TbChartLine className="panel-icon" />
+                    <h2 className="panel-title">경제 지표</h2>
+                </div>
+                <div className="loading-message">{error}</div>
+            </div>
+        );
+    }
 
     return (
         <div className="economic-indicators">
@@ -125,7 +107,7 @@ export default function EconomicIndicators() {
                 <TbChartLine className="panel-icon" />
                 <h2 className="panel-title">경제 지표</h2>
             </div>
-            <div className="indicators-list">
+            <div className="indicators-list" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
                 {indicators.map((indicator, index) => (
                     <div key={index} className="indicator-item">
                         <div className="indicator-info">

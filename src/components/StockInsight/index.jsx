@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { TbTarget, TbTrendingUp, TbTrendingDown, TbMinus } from "react-icons/tb";
+import "./style.css";
 
 export default function StockInsight({ code }) {
     const [insight, setInsight] = useState(null);
@@ -12,18 +13,27 @@ export default function StockInsight({ code }) {
         setError("");
 
         // 실제 백엔드 API 호출
-        fetch(`/api/insight/${encodeURIComponent(code)}`)
-            .then(res => {
-                if (!res.ok) throw new Error("AI 인사이트 정보를 불러올 수 없습니다.");
+        const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+        fetch(`${base}/api/stock/opinion?code=${encodeURIComponent(code)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const errorBody = await res.json();
+                    throw new Error(errorBody.message || `API 호출 실패: ${res.status}`);
+                }
                 return res.json();
             })
-            .then(data => {
-                // API 명세: { stock_name, conclusion, report }
-                const getOpinionIcon = (conclusion) => {
-                    switch (conclusion) {
-                        case '매수': return <TbTrendingUp style={{ color: '#22c55e' }} />;
-                        case '매도': return <TbTrendingDown style={{ color: '#ef4444' }} />;
-                        case '중립': return <TbMinus style={{ color: '#f59e0b' }} />;
+            .then(raw => {
+                const data = raw?.data || raw; // ApiResponse 언랩
+                const getOpinionIcon = (stance) => {
+                    switch (stance) {
+                        case 'buy': return <TbTrendingUp style={{ color: '#22c55e' }} />;
+                        case 'sell': return <TbTrendingDown style={{ color: '#ef4444' }} />;
+                        case 'neutral': return <TbMinus style={{ color: '#f59e0b' }} />;
                         default: return <TbTarget style={{ color: '#6366f1' }} />;
                     }
                 };
@@ -31,22 +41,29 @@ export default function StockInsight({ code }) {
                 const formattedInsight = (
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                            {getOpinionIcon(data.conclusion)}
-                            투자 의견: {data.conclusion}
+                            {getOpinionIcon(data.stance)}
+                            투자 의견: {data.stance === 'buy' ? '매수' : data.stance === 'sell' ? '매도' : '중립'} (확신도: {(data.confidence * 100).toFixed(1)}%)
                         </div>
                         <div style={{ lineHeight: '1.6', marginBottom: '16px' }}>
-                            {data.report}
+                            {data.reasons && data.reasons.length > 0 ? (
+                                <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                                    {data.reasons.map((reason, index) => (
+                                        <li key={index} style={{ marginBottom: '8px' }}>{reason}</li>
+                                    ))}
+                                </ul>
+                            ) : '분석 중입니다...'}
                         </div>
                         <div style={{ fontStyle: 'italic', color: '#666', fontSize: '0.9rem' }}>
-                            AI 분석 기준 종목: {data.stock_name}
+                            AI 분석 기준 종목: {data.stock?.name || code} • 분석 시점: {data.asOf || ''}
                         </div>
                     </div>
                 );
                 setInsight(formattedInsight);
             })
             .catch(err => {
-                setError(err.message);
-                // 실패 시 Mock 인사이트 사용
+                console.log('AI 인사이트 API 호출 실패:', err.message);
+                // 백엔드 API 실패 시 Mock 인사이트 사용
+                setError(null); // 에러 표시하지 않고 Mock 데이터 사용
                 const mockInsights = {
                     "005930": (
                         <div>

@@ -9,22 +9,27 @@ export default function StockIssues({ code }) {
         if (!code) return;
         setLoading(true);
         setError("");
-
-        // 1차 시도: 종목 코드로 테마 기사 조회 (백엔드에서 종목코드→테마 매핑이 되어 있다면)
-        fetch(`/api/news/theme/${encodeURIComponent(code)}`)
+        const base = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
+        // 1) 종목명 조회 → 2) 해당 키워드로 뉴스 검색
+        fetch(`${base}/api/stock/${encodeURIComponent(code)}/name`)
+            .then(r => r.json())
+            .then(nameObj => {
+                const stockName = nameObj.stockName || code;
+                return fetch(`${base}/api/news/theme/${encodeURIComponent(stockName)}?display=5`);
+            })
             .then(res => {
-                if (!res.ok) throw new Error("뉴스 정보를 불러올 수 없습니다.");
+                if (!res.ok) throw new Error(`뉴스 정보를 불러올 수 없습니다. (${res.status})`);
                 return res.json();
             })
-            .then(data => {
-                // API 명세: [{ id, title, url, published_at, click_count }]
-                const formattedNews = data.map(item => ({
-                    title: item.title,
-                    date: item.published_at?.split('T')[0] || "날짜 미확인",
-                    url: item.url,
-                    id: item.id
+            .then(raw => {
+                const payload = raw?.data || raw; // ApiResponse 언랩
+                const items = Array.isArray(payload) ? payload : [];
+                const formatted = items.map(it => ({
+                    title: it.title,
+                    date: (it.pubDate || '').split(' ').slice(0, 4).join(' '),
+                    url: it.link || it.originallink || '#'
                 }));
-                setNews(formattedNews);
+                setNews(formatted);
             })
             .catch(err => {
                 console.log('테마 기사 로딩 실패, Mock 데이터 사용:', err.message);
