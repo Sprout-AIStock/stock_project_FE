@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { FiSearch } from "react-icons/fi";
 import logoImg from "../../assets/slogan.png";
 import "./style.css";
@@ -9,29 +10,35 @@ export default function BannerWithSearch() {
     const [isSearching, setIsSearching] = useState(false);
     const [showRelatedSearches, setShowRelatedSearches] = useState(false);
     const [relatedSearches, setRelatedSearches] = useState([]);
+    const [allStocks, setAllStocks] = useState([]); // 전체 종목 리스트
     const navigate = useNavigate();
 
-    // 키워드 검색 (관련검색어용)
-    const searchStocksByKeyword = async (keyword) => {
+    // 전체 종목 리스트를 받아오는 함수 (컴포넌트 내부 구현)
+    async function fetchAllStocks() {
         try {
-            console.log('관련검색어 API 호출:', keyword);
-            const response = await fetch(`/api/stocks/search/keyword?q=${encodeURIComponent(keyword)}`);
-            console.log('API 응답 상태:', response.status);
+            const response = await fetch('http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stocks/all');
             if (response.ok) {
                 const results = await response.json();
-                console.log('관련검색어 결과:', results);
                 return results || [];
             }
         } catch (error) {
-            console.error('키워드 검색 API 호출 실패:', error);
+            console.error('전체 종목 리스트 API 호출 실패:', error);
         }
         return [];
-    };
+    }
+
+    // 컴포넌트 마운트 시 전체 종목 리스트 받아오기
+    useEffect(() => {
+        (async () => {
+            const stocks = await fetchAllStocks();
+            setAllStocks(stocks);
+        })();
+    }, []);
 
     // 정확한 종목명 검색
     const searchStockByName = async (stockName) => {
         try {
-            const response = await fetch(`/api/stocks/search?name=${encodeURIComponent(stockName)}`);
+            const response = await fetch(`http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stocks/search?name=${encodeURIComponent(stockName)}`);
             if (response.ok) {
                 const result = await response.json();
                 return result;
@@ -42,25 +49,22 @@ export default function BannerWithSearch() {
         return null;
     };
 
-    // 검색어 입력 시 관련검색어 제안
-    const handleInputChange = async (e) => {
+    // 검색어 입력 시 FE에서 관련검색어 필터링
+    const handleInputChange = (e) => {
         const value = e.target.value;
         setQuery(value);
 
-        if (value.trim().length > 0) {
+        if (value.trim().length > 0 && allStocks.length > 0) {
             setIsSearching(true);
-
-            // 키워드 검색 API 호출로 관련검색어 데이터 가져오기
-            const results = await searchStocksByKeyword(value.trim());
-
-            if (results.length > 0) {
-                setRelatedSearches(results.slice(0, 8)); // 최대 8개만 표시
-                setShowRelatedSearches(true);
-            } else {
-                setRelatedSearches([]);
-                setShowRelatedSearches(false);
-            }
-
+            // 종목명 또는 코드에 포함되는 항목 필터링 (대소문자 무시)
+            const keyword = value.trim().toLowerCase();
+            const filtered = allStocks.filter(
+                stock =>
+                    (stock.stockName && stock.stockName.toLowerCase().includes(keyword)) ||
+                    (stock.stockCode && stock.stockCode.toLowerCase().includes(keyword))
+            );
+            setRelatedSearches(filtered.slice(0, 8)); // 최대 8개만 표시
+            setShowRelatedSearches(filtered.length > 0);
             setIsSearching(false);
         } else {
             setShowRelatedSearches(false);

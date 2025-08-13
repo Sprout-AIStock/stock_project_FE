@@ -31,11 +31,11 @@ export default function StockChart({ code }) {
 
                 let apiUrl = '';
                 if (chartType === 'daily') {
-                    apiUrl = `/api/stock/${code}/chart/daily?count=30`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/daily?count=30`;
                 } else if (chartType === 'weekly') {
-                    apiUrl = `/api/stock/${code}/chart/weekly?count=20`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/weekly?count=20`;
                 } else if (chartType === 'monthly') {
-                    apiUrl = `/api/stock/${code}/chart/monthly?count=12`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/monthly?count=12`;
                 }
 
                 console.log(`🔗 API 요청: ${apiUrl}`);
@@ -103,9 +103,9 @@ export default function StockChart({ code }) {
 
         console.log(`🔄 ${type} 차트 데이터 처리 시작`);
         console.log('📊 dealTrendInfos 샘플:', data.dealTrendInfos.slice(0, 3));
-    const dealData = data.dealTrendInfos;
-    // API 순서대로(최신→과거) 사용
-    let processedData = dealData.map(item => {
+        const dealData = data.dealTrendInfos;
+        // API 순서대로(최신→과거) 사용
+        let processedData = dealData.map(item => {
             const dateString = item.date;
             if (!dateString) return null;
             const date = formatDateForChart(dateString);
