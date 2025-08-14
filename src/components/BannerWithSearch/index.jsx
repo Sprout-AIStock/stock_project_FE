@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FiSearch } from "react-icons/fi";
-import logoImg from "../../assets/slogan.png";
+import logoImg from "../../assets/slogan.PNG";
 import "./style.css";
 
 export default function BannerWithSearch() {
