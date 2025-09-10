@@ -1,13 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import BannerWithSearch from './components/bannerWithSearch/BannerWithSearch';
-import EconomicIndicators from './components/economicIndicators/EconomicIndicators';
-import MacroNewsPanel from './components/macroNewsPanel/MacroNewsPanel';
-import ThemeSection from './components/themeSection/ThemeSection';
-import SchedulePanel from './components/schedulePanel/SchedulePanel';
-import TopStockPanel from './components/topStockPanel/TopStockPanel';
-import StockDetail from './pages/stockDetail/StockDetail';
-import ReportChat from './pages/reportChat/ReportChat';
+import { BannerWithSearch, EconomicIndicators, MacroNewsPanel, SchedulePanel, StockChart, StockInsight, StockIssues, ThemeSection, TopStockPanel } from './components';
+import { ReportChat, StockDetail } from './pages';
 
 function MainPage() {
   return (
