@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FaArrowLeft, FaChartLine, FaBrain, FaNewspaper } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import StockChart from '../../components/StockChart';
-import StockInsight from '../../components/StockInsight';
-import StockIssues from '../../components/StockIssues';
-import './style.css';
+import StockChart from '../../components/stockChart/StockChart';
+import StockInsight from '../../components/stockInsight/StockInsight';
+import StockIssues from '../../components/stockIssues/StockIssues';
+import './StockDetail.css';
 
 export default function StockDetail() {
     const { code } = useParams();

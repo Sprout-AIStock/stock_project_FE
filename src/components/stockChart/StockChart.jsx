@@ -12,14 +12,10 @@ import {
     ReferenceLine
 } from 'recharts';
 
-const API_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
-
 export default function StockChart({ code }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [stockName, setStockName] = useState("");
-    // 종목명 별도 fetch 상태
-    const [resolvedName, setResolvedName] = useState("");
     const [chartType, setChartType] = useState("daily");
     const [rawData, setRawData] = useState(null);
     const [chartData, setChartData] = useState([]);
@@ -28,26 +24,6 @@ export default function StockChart({ code }) {
     useEffect(() => {
         if (!code) return;
 
-        // 종목명 별도 API 호출
-        const fetchStockName = async () => {
-            try {
-                const url = `${API_BASE}/api/stock/${code}/name`;
-                const response = await fetch(url);
-                if (response.ok) {
-                    const result = await response.json();
-                    // 래퍼 구조: { code, message, data: { stockName } }
-                    const name = result?.data?.stockName || result?.stockName || "";
-                    setResolvedName(name);
-                } else {
-                    setResolvedName("");
-                }
-            } catch {
-                setResolvedName("");
-            }
-        };
-
-        fetchStockName();
-
         const fetchStockData = async () => {
             try {
                 setLoading(true);
@@ -55,12 +31,14 @@ export default function StockChart({ code }) {
 
                 let apiUrl = '';
                 if (chartType === 'daily') {
-                    apiUrl = `${API_BASE}/api/stock/${code}/chart/daily?count=30`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/daily?count=30`;
                 } else if (chartType === 'weekly') {
-                    apiUrl = `${API_BASE}/api/stock/${code}/chart/weekly?count=20`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/weekly?count=20`;
                 } else if (chartType === 'monthly') {
-                    apiUrl = `${API_BASE}/api/stock/${code}/chart/monthly?count=12`;
+                    apiUrl = `http://ec2-43-201-63-20.ap-northeast-2.compute.amazonaws.com/api/stock/${code}/chart/monthly?count=12`;
                 }
+
+                //console.log(`🔗 API 요청: ${apiUrl}`);
 
                 const response = await fetch(apiUrl, {
                     method: 'GET',
@@ -69,28 +47,37 @@ export default function StockChart({ code }) {
                     },
                 });
 
+                //console.log('📡 응답 상태:', response.status, response.statusText);
+
                 if (!response.ok) {
                     throw new Error(`API 호출 실패: ${response.status} ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                let dealTrendInfos = [];
-                const payload = data.data || data;
-                if (Array.isArray(payload)) {
-                    dealTrendInfos = payload;
-                } else if (Array.isArray(payload.dealTrendInfos)) {
-                    dealTrendInfos = payload.dealTrendInfos;
-                } else if (Array.isArray(payload.data)) {
-                    dealTrendInfos = payload.data;
-                }
-                setRawData({ dealTrendInfos });
-                processChartData({ dealTrendInfos }, chartType);
+                //console.log(`📊 ${chartType} 차트 원본 데이터:`, data);
 
+                // 응답이 배열, dealTrendInfos, data.data 등 다양한 구조 지원
+                let dealTrendInfos = [];
+                if (Array.isArray(data)) {
+                    dealTrendInfos = data;
+                } else if (Array.isArray(data.dealTrendInfos)) {
+                    dealTrendInfos = data.dealTrendInfos;
+                } else if (Array.isArray(data.data)) {
+                    dealTrendInfos = data.data;
+                }
+                const stockName = data.name || data.stockName || code;
+
+                setStockName(stockName);
+                setRawData({ dealTrendInfos, stockName });
+                processChartData({ dealTrendInfos, stockName }, chartType);
+
+                // 안내: 데이터가 0개면 에러 대신 안내만
                 if (!dealTrendInfos || dealTrendInfos.length === 0) {
                     setError("차트 데이터가 없습니다.");
                 }
 
             } catch (err) {
+                console.error('차트 데이터 로딩 실패:', err);
                 setError(`차트 데이터를 불러올 수 없습니다: ${err.message}`);
             } finally {
                 setLoading(false);
@@ -114,8 +101,8 @@ export default function StockChart({ code }) {
             return;
         }
 
-        console.log(`🔄 ${type} 차트 데이터 처리 시작`);
-        console.log('📊 dealTrendInfos 샘플:', data.dealTrendInfos.slice(0, 3));
+        //console.log(`🔄 ${type} 차트 데이터 처리 시작`);
+        //console.log('📊 dealTrendInfos 샘플:', data.dealTrendInfos.slice(0, 3));
         const dealData = data.dealTrendInfos;
         // API 순서대로(최신→과거) 사용
         let processedData = dealData.map(item => {
@@ -234,7 +221,7 @@ export default function StockChart({ code }) {
     return (
         <div style={{ padding: '20px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
             <h3 style={{ marginBottom: '20px', color: '#333' }}>
-                {(resolvedName || stockName || code)} 주가 차트 ({code})
+                {stockName} 주가 차트 ({code})
             </h3>
 
             {/* 차트 타입 선택 버튼 (항상 표시) */}

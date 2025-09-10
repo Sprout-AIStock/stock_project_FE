@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TbTarget, TbTrendingUp, TbTrendingDown, TbMinus } from "react-icons/tb";
-import "./style.css";
+import "./StockInsight.css";
 
 export default function StockInsight({ code }) {
     const [insight, setInsight] = useState(null);

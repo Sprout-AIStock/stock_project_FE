@@ -1,6 +1,6 @@
 import { FaSearchDollar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import "./style.css";
+import "./TopStockPanel.css";
 
 const TopStockPanel = () => {
     const navigate = useNavigate();

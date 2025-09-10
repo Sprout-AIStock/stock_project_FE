@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './style.css';
+import './ReportChat.css';
 
 export default function ReportChat() {
   const [question, setQuestion] = useState('오늘 시장 핵심 요약 알려줘');

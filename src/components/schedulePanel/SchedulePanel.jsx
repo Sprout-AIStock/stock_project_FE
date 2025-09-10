@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TbCalendarEvent, TbClock, TbFlag } from "react-icons/tb";
-import "./style.css";
+import "./SchedulePanel.css";
 
 export default function SchedulePanel() {
     const [schedules, setSchedules] = useState([]);

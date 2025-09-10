@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TbTrendingUp, TbTrendingDown, TbMinus, TbChartLine } from "react-icons/tb";
-import "./style.css";
+import "./EconomicIndicators.css";
 
 export default function EconomicIndicators() {
     const [indicators, setIndicators] = useState([]);

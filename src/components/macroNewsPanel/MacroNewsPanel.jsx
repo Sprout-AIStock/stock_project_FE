@@ -1,4 +1,4 @@
-import "./style.css";
+import "./MacroNewsPanel.css";
 import { FaNewspaper } from "react-icons/fa";
 import { useEffect, useState } from "react";
 
